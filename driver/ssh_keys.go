@@ -9,7 +9,6 @@ import (
 	"github.com/docker/machine/libmachine/mcnutils"
 	mcnssh "github.com/docker/machine/libmachine/ssh"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
-	"golang.org/x/crypto/ssh"
 )
 
 func (d *Driver) setupExistingKey() error {
@@ -17,30 +16,30 @@ func (d *Driver) setupExistingKey() error {
 		return nil
 	}
 
-	if d.originalKey == "" {
-		return d.flagFailure("specifying an existing key ID requires the existing key path to be set as well")
-	}
+	// if d.originalKey == "" {
+	// 	return d.flagFailure("specifying an existing key ID requires the existing key path to be set as well")
+	// }
 
-	key, err := d.getKey()
+	_, err := d.getKey()
 	if err != nil {
 		return fmt.Errorf("could not get key: %w", err)
 	}
 
-	buf, err := os.ReadFile(d.originalKey + ".pub")
-	if err != nil {
-		return fmt.Errorf("could not read public key: %w", err)
-	}
+	// buf, err := os.ReadFile(d.originalKey + ".pub")
+	// if err != nil {
+	// 	return fmt.Errorf("could not read public key: %w", err)
+	// }
 
 	// Will also parse `ssh-rsa w309jwf0e39jf asdf` public keys
-	pubk, _, _, _, err := ssh.ParseAuthorizedKey(buf)
-	if err != nil {
-		return fmt.Errorf("could not parse authorized key: %w", err)
-	}
+	// pubk, _, _, _, err := ssh.ParseAuthorizedKey(buf)
+	// if err != nil {
+	// 	return fmt.Errorf("could not parse authorized key: %w", err)
+	// }
 
-	if key.Fingerprint != ssh.FingerprintLegacyMD5(pubk) &&
-		key.Fingerprint != ssh.FingerprintSHA256(pubk) {
-		return fmt.Errorf("remote key %d does not match local key %s", d.KeyID, d.originalKey)
-	}
+	// if key.Fingerprint != ssh.FingerprintLegacyMD5(pubk) &&
+	// 	key.Fingerprint != ssh.FingerprintSHA256(pubk) {
+	// 	return fmt.Errorf("remote key %d does not match local key %s", d.KeyID, d.originalKey)
+	// }
 
 	return nil
 }

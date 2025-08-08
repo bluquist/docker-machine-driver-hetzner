@@ -2,7 +2,10 @@ package driver
 
 import (
 	"fmt"
+	"io/ioutil"
 	"strings"
+
+	"gopkg.in/yaml.v3"
 
 	"github.com/docker/machine/libmachine/drivers"
 	"github.com/docker/machine/libmachine/log"
@@ -75,18 +78,80 @@ func (d *Driver) deprecatedBooleanFlag(opts drivers.DriverOptions, flag, depreca
 	return opts.Bool(flag)
 }
 
+// mergeYAMLDocs merges two YAML documents, merging arrays under the same key.
+func mergeYAMLDocs(doc1, doc2 string) (string, error) {
+	var m1, m2 map[string]interface{}
+
+	if err := yaml.Unmarshal([]byte(doc1), &m1); err != nil {
+		return "", fmt.Errorf("failed to unmarshal first YAML: %w", err)
+	}
+	if err := yaml.Unmarshal([]byte(doc2), &m2); err != nil {
+		return "", fmt.Errorf("failed to unmarshal second YAML: %w", err)
+	}
+
+	merged := mergeMaps(m1, m2)
+
+	out, err := yaml.Marshal(merged)
+	if err != nil {
+		return "", fmt.Errorf("failed to marshal merged YAML: %w", err)
+	}
+
+	result := string(out)
+	cloudConfigComment := "#cloud-config"
+	if !strings.HasPrefix(strings.TrimSpace(result), cloudConfigComment) {
+		result = cloudConfigComment + "\n" + result
+	}
+	return result, nil
+}
+
+// mergeMaps recursively merges src into dst, merging arrays under the same key.
+func mergeMaps(dst, src map[string]interface{}) map[string]interface{} {
+	for k, v := range src {
+		if vMap, ok := v.(map[string]interface{}); ok {
+			if dstMap, ok := dst[k].(map[string]interface{}); ok {
+				dst[k] = mergeMaps(dstMap, vMap)
+			} else {
+				dst[k] = vMap
+			}
+		} else if vArr, ok := v.([]interface{}); ok {
+			if dstArr, ok := dst[k].([]interface{}); ok {
+				dst[k] = append(dstArr, vArr...)
+			} else {
+				dst[k] = vArr
+			}
+		} else {
+			dst[k] = v
+		}
+	}
+	return dst
+}
+
 func (d *Driver) setUserDataFlags(opts drivers.DriverOptions) error {
 	userData := opts.String(flagUserData)
 	userDataFile := opts.String(flagUserDataFile)
+	additionalUserData := opts.String(flagAdditionalUserData)
 
 	if opts.Bool(legacyFlagUserDataFromFile) {
 		if userDataFile != "" {
 			return d.flagFailure("--%v and --%v are mutually exclusive", flagUserDataFile, legacyFlagUserDataFromFile)
 		}
 
-		log.Warnf("--%v is DEPRECATED FOR REMOVAL, pass '--%v \"%v\"'", legacyFlagUserDataFromFile, flagUserDataFile, userData)
-		d.usesDfr = true
-		d.userDataFile = userData
+		// log.Warnf("--%v is DEPRECATED FOR REMOVAL, pass '--%v \"%v\"'", legacyFlagUserDataFromFile, flagUserDataFile, userData)
+		if additionalUserData != "" {
+			// Read user data from file
+			content, err := ioutil.ReadFile(userData)
+			if err != nil {
+				return err
+			}
+			merged, err := mergeYAMLDocs(strings.ReplaceAll(additionalUserData, `\n`, "\n"), string(content))
+			if err != nil {
+				return fmt.Errorf("failed to merge user data YAML: %w", err)
+			}
+			d.userData = merged
+		} else {
+			d.usesDfr = true
+			d.userDataFile = userData
+		}
 		return nil
 	}
 
