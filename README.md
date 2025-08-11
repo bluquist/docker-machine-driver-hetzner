@@ -97,12 +97,13 @@ $ docker-machine create \
 - `--hetzner-server-type`: The type of the Hetzner Cloud server, see [Server Types API](hhttps://docs.hetzner.cloud/#server-types-get-all-server-types) for how to get a list (defaults to `cx11`).
 - `--hetzner-server-location`: The location to create the server in, see [Locations API](https://docs.hetzner.cloud/#locations-get-all-locations) for how to get a list.
 - `--hetzner-existing-key-path`: Use an existing (local) SSH key instead of generating a new keypair. If a remote key with a matching fingerprint exists, it will be used as if specified using `--hetzner-existing-key-id`, rather than uploading a new key.
-- `--hetzner-existing-key-id`: **requires `--hetzner-existing-key-path`**. Use an existing (remote) SSH key instead of uploading the imported key pair,
+- `--hetzner-existing-key-id`: Use an existing (remote) SSH key instead of uploading the imported key pair,
   see [SSH Keys API](https://docs.hetzner.cloud/#ssh-keys-get-all-ssh-keys) for how to get a list
 - `--hetzner-additional-key`: Upload an additional public key associated with the server, or associate an existing one with the same fingerprint. Can be specified multiple times.
 - `--hetzner-user-data`: Cloud-init based data, passed inline as-is.
 - `--hetzner-user-data-file`: Cloud-init based data, read from passed file.
-- `--hetzner-user-data-from-file`: DEPRECATED, use `--hetzner-user-data-file`. Read `--hetzner-user-data` as file name and use contents as user-data.
+- `--hetzner-user-data-from-file`: Read `--hetzner-user-data` as file name and use contents as user-data.
+- `--hetzner-additional-user-data`: Additional cloud-init based data, passed inline. This content will be merged into the user data YAML read from file. Useful to inject additional user data. If duplicate keys are existing in the base and additional data, they are getting combined, with the additional data _prepended_.
 - `--hetzner-volumes`: Volume IDs or names which should be attached to the server
 - `--hetzner-networks`: Network IDs or names which should be attached to the server private network interface
 - `--hetzner-use-private-network`: Use private network
