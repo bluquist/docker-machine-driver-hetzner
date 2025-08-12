@@ -27,7 +27,7 @@ jobs:
   release:
     runs-on: ubuntu-22.04
     needs: [ lint, build ]
-    if: ${{ startsWith(github.ref, 'refs/tags/') && contains(fromJSON('["mxschmitt", "JonasProgrammer"]'), github.actor) }}
+    if: ${{ startsWith(github.ref, 'refs/tags/') && contains(fromJSON('["nils-bq", "nicholas-bq"]'), github.actor) }}
     steps:
       - uses: actions/checkout@v4
       - name: Set up Go
