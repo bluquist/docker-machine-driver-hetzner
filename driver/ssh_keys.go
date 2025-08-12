@@ -16,30 +16,10 @@ func (d *Driver) setupExistingKey() error {
 		return nil
 	}
 
-	// if d.originalKey == "" {
-	// 	return d.flagFailure("specifying an existing key ID requires the existing key path to be set as well")
-	// }
-
 	_, err := d.getKey()
 	if err != nil {
 		return fmt.Errorf("could not get key: %w", err)
 	}
-
-	// buf, err := os.ReadFile(d.originalKey + ".pub")
-	// if err != nil {
-	// 	return fmt.Errorf("could not read public key: %w", err)
-	// }
-
-	// Will also parse `ssh-rsa w309jwf0e39jf asdf` public keys
-	// pubk, _, _, _, err := ssh.ParseAuthorizedKey(buf)
-	// if err != nil {
-	// 	return fmt.Errorf("could not parse authorized key: %w", err)
-	// }
-
-	// if key.Fingerprint != ssh.FingerprintLegacyMD5(pubk) &&
-	// 	key.Fingerprint != ssh.FingerprintSHA256(pubk) {
-	// 	return fmt.Errorf("remote key %d does not match local key %s", d.KeyID, d.originalKey)
-	// }
 
 	return nil
 }
