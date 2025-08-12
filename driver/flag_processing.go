@@ -2,7 +2,7 @@ package driver
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 
 	"gopkg.in/yaml.v3"
@@ -139,7 +139,7 @@ func (d *Driver) setUserDataFlags(opts drivers.DriverOptions) error {
 		// log.Warnf("--%v is DEPRECATED FOR REMOVAL, pass '--%v \"%v\"'", legacyFlagUserDataFromFile, flagUserDataFile, userData)
 		if additionalUserData != "" {
 			// Read user data from file
-			content, err := ioutil.ReadFile(userData)
+			content, err := os.ReadFile(userData)
 			if err != nil {
 				return err
 			}
