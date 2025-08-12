@@ -69,30 +69,31 @@ const (
 	defaultImage = "ubuntu-20.04"
 	defaultType  = "cx11"
 
-	flagAPIToken          = "hetzner-api-token"
-	flagImage             = "hetzner-image"
-	flagImageID           = "hetzner-image-id"
-	flagImageArch         = "hetzner-image-arch"
-	flagType              = "hetzner-server-type"
-	flagLocation          = "hetzner-server-location"
-	flagExKeyID           = "hetzner-existing-key-id"
-	flagExKeyPath         = "hetzner-existing-key-path"
-	flagUserData          = "hetzner-user-data"
-	flagUserDataFile      = "hetzner-user-data-file"
-	flagVolumes           = "hetzner-volumes"
-	flagNetworks          = "hetzner-networks"
-	flagUsePrivateNetwork = "hetzner-use-private-network"
-	flagDisablePublic4    = "hetzner-disable-public-ipv4"
-	flagDisablePublic6    = "hetzner-disable-public-ipv6"
-	flagPrimary4          = "hetzner-primary-ipv4"
-	flagPrimary6          = "hetzner-primary-ipv6"
-	flagDisablePublic     = "hetzner-disable-public"
-	flagFirewalls         = "hetzner-firewalls"
-	flagAdditionalKeys    = "hetzner-additional-key"
-	flagServerLabel       = "hetzner-server-label"
-	flagKeyLabel          = "hetzner-key-label"
-	flagPlacementGroup    = "hetzner-placement-group"
-	flagAutoSpread        = "hetzner-auto-spread"
+	flagAPIToken           = "hetzner-api-token"
+	flagImage              = "hetzner-image"
+	flagImageID            = "hetzner-image-id"
+	flagImageArch          = "hetzner-image-arch"
+	flagType               = "hetzner-server-type"
+	flagLocation           = "hetzner-server-location"
+	flagExKeyID            = "hetzner-existing-key-id"
+	flagExKeyPath          = "hetzner-existing-key-path"
+	flagUserData           = "hetzner-user-data"
+	flagAdditionalUserData = "hetzner-additional-user-data"
+	flagUserDataFile       = "hetzner-user-data-file"
+	flagVolumes            = "hetzner-volumes"
+	flagNetworks           = "hetzner-networks"
+	flagUsePrivateNetwork  = "hetzner-use-private-network"
+	flagDisablePublic4     = "hetzner-disable-public-ipv4"
+	flagDisablePublic6     = "hetzner-disable-public-ipv6"
+	flagPrimary4           = "hetzner-primary-ipv4"
+	flagPrimary6           = "hetzner-primary-ipv6"
+	flagDisablePublic      = "hetzner-disable-public"
+	flagFirewalls          = "hetzner-firewalls"
+	flagAdditionalKeys     = "hetzner-additional-key"
+	flagServerLabel        = "hetzner-server-label"
+	flagKeyLabel           = "hetzner-key-label"
+	flagPlacementGroup     = "hetzner-placement-group"
+	flagAutoSpread         = "hetzner-auto-spread"
 
 	flagSshUser = "hetzner-ssh-user"
 	flagSshPort = "hetzner-ssh-port"
@@ -185,6 +186,12 @@ func (d *Driver) GetCreateFlags() []mcnflag.Flag {
 			EnvVar: "HETZNER_USER_DATA",
 			Name:   flagUserData,
 			Usage:  "Cloud-init based user data (inline).",
+			Value:  "",
+		},
+		mcnflag.StringFlag{
+			EnvVar: "HETZNER_ADDITIONAL_USER_DATA",
+			Name:   flagAdditionalUserData,
+			Usage:  "Additional Cloud-init based user data (inline).",
 			Value:  "",
 		},
 		mcnflag.BoolFlag{
